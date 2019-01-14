@@ -1,0 +1,24 @@
+# R
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# system
+.DS_Store
+
+# directories
+data/
+figures/
+wrk/
+old/
+reports/
+
+# file types
+.csv
+.rds
+.rda
+.xls
+.xlsx
+.png
+.gif
