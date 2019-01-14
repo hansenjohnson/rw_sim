@@ -2,8 +2,10 @@
 Simulate right whale movement to compare visual and acoustic survey results
 
 ## TO DO
-* Version control
-*
+* Quantify the timestep at which the distributions are statistically identical for each movement case
+  * Figure out which statistical test to use for comparing distributions
+* Plot as probability surface rather than raw points
+* Consider a state-space model where animat can choose to transition between movement behaviours
 
 ## Background
 Visual surveys report the position of a sighted whale to perhaps within 10 to 100 meters of its actual location. Acoustic surveys only report that a detected whale was within a given listening radius of the monitoring platform. Other work suggests the detection radius is commonly on the order 15 kilometers.
@@ -22,9 +24,9 @@ I will randomly seed an area of a given radius with 10000 simulated whales and t
 
 ## Project structure
 
-`rw_sim.R` - master script (with simulation parameters) that executes entire analysis (simulates, plots in `figures/` and saves in `data/`)
-`src/functions.R` - functions called by master script
-`src/tests.R` - diagnostics to test major functions
-`figures` - plots and movies of simulation results
-`data` - output from simulations
-`wrk` - development sandbox
+`rw_sim.R` - master script (with simulation parameters) that executes entire analysis (simulates, plots in `figures/` and saves in `data/`)  
+`src/functions.R` - functions called by master script  
+`src/tests.R` - diagnostics to test major functions  
+`figures` - plots and movies of simulation results  
+`data` - output from simulations  
+`wrk` - development sandbox  
