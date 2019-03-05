@@ -3,23 +3,14 @@
 
 # inputs ------------------------------------------------------------------
 
-# radius of acoustic detection [meters]
-a_radius = 15e3
-
-# radius of visual detection [meters]
-v_radius = 0.1e3
-
 # number of right whales to simulate
-nrws = 10000
+nrws = 1e5
 
 # number of hours to simulate
-nhrs = 48
+nhrs = 96
 
 # size of timestep [seconds]
-nt = 300
-
-# plot movie? (requires ffmpeg)
-plot_movie = TRUE
+nt = 60*60
 
 # setup -------------------------------------------------------------------
 
@@ -28,16 +19,26 @@ source('src/functions.R')
 # process -----------------------------------------------------------------
 
 # feeding
-proc_rw_sim(nrws = nrws, a_radius = a_radius, v_radius = v_radius, nt = nt, bh = 'feeding', plot_movie = plot_movie)
+proc_rw_sim(nrws = nrws, hrs = nhrs, nt = nt, bh = 'feeding')
 
 # socializing
-proc_rw_sim(nrws = nrws, a_radius = a_radius, v_radius = v_radius, nt = nt, bh = 'socializing', plot_movie = plot_movie)
+proc_rw_sim(nrws = nrws, hrs = nhrs, nt = nt, bh = 'socializing')
 
 # traveling
-proc_rw_sim(nrws = nrws, a_radius = a_radius, v_radius = v_radius, nt = nt, bh = 'traveling', plot_movie = plot_movie)
+proc_rw_sim(nrws = nrws, hrs = nhrs, nt = nt, bh = 'traveling')
 
 # linear
-proc_rw_sim(nrws = nrws, a_radius = a_radius, v_radius = v_radius, nt = nt, bh = 'linear', plot_movie = plot_movie)
+proc_rw_sim(nrws = nrws, hrs = nhrs, nt = nt, bh = 'linear')
 
 # random
-proc_rw_sim(nrws = nrws, a_radius = a_radius, v_radius = v_radius, nt = nt, bh = 'random', plot_movie = plot_movie)
+proc_rw_sim(nrws = nrws, hrs = nhrs, nt = nt, bh = 'random')
+
+# summary plots -----------------------------------------------------------
+
+source('src/plot_detection_function.R')
+source('src/plot_tide.R')
+source('src/plot_example_tracks.R')
+source('src/plot_movies.R')
+source('src/plot_time_space.R')
+source('src/plot_timeseries.R')
+source('src/plot_range_probability.R')
