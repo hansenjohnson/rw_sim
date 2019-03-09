@@ -9,16 +9,18 @@
 
 # directories
 data/
+cache/
 figures/
 wrk/
 old/
 reports/
 
 # file types
-.csv
-.rds
-.rda
-.xls
-.xlsx
-.png
-.gif
+*.csv
+*.rds
+*.rda
+*.xls
+*.xlsx
+*.png
+*.gif
+*.mp4

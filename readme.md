@@ -1,32 +1,39 @@
 # rw_sim
 Simulate right whale movement to compare visual and acoustic survey results
 
-## TO DO
-* Quantify the timestep at which the distributions are statistically identical for each movement case
-  * Figure out which statistical test to use for comparing distributions
-* Plot as probability surface rather than raw points
-* Consider a state-space model where animat can choose to transition between movement behaviours
-
-## Background
-Visual surveys report the position of a sighted whale to perhaps within 10 to 100 meters of its actual location. Acoustic surveys only report that a detected whale was within a given listening radius of the monitoring platform. Other work suggests the detection radius is commonly on the order 15 kilometers.
-
-The large uncertainty in the absolute position of an acoustically detected whale has been cited as reason that acoustic detections cannot be used to inform management decisions. That reasoning omits an important consideration: whale movement. There is always some latency period between when a whale is cited and a management action is taken, during which time the observed whale may move. It varies widely depending on the observation platform and management measure, but the time delay from sightings to management is typically about 24 hours. Whales can move great distances in this period of time. There must be a point in time at which the uncertainty that arises from movement equals the initial uncertainty due to detection method. At this point, both detection methods are effectively providing the same management information. If this time occurs within the 24 hour response time, one could argue that acoustic and visual observations provide exactly the same management information.
-
-The goal of this project is to simulate right whale movements to quantitatively compare the time evolution of the uncertainty in whale position that arises from visual and acoustic detection methods.
-
-## Methods
-
-The right whale movement model is an auto-correlated random walk based on the model used by van der Hoop et al (2012) to quantify ship strike risk in Roseway Basin, and by Vanderlaan et al (2018) to estimate gear encounter rates in the southern Gulf of St Lawrence. The two random terms in the model are speed and direction. Speed is selected at each timestep from a uniform distribution between 0 and 1.23 m/s. The initial travel direction is selected from a uniform distribution from 1 to 360 degrees. The turning rate is then constrained to a given angle per 10 meters of travel distance. I will use 3 different parameterizations of turning rate based on observations from Mayo and Marx (1990) to approximate movement patterns associated with feeding (22.1 deg / 10m), socializing (50 deg / 10m), and traveling (5 deg / 10m). I will also model the two extreme cases of entirely linear (0 deg / 10m) and entirely random (360 deg / 10m) travel to help with model interpretation.
-
-The model framework requires an extremely high time resolution to constrain turning rate appropriately. I will run the model at a 2.5 second resolution, then downsample to 5 minute resolution to allow for fast computation while retaining the integrity of the simulated track.
-
-I will randomly seed an area of a given radius with 10000 simulated whales and track their movements over a period of 48 hours. I will repeat this for each movement model with starting radii of 0.1 and 15 km to represent initial uncertainties from visual and acoustic surveys, respectively.
-
 ## Project structure
 
-`rw_sim.R` - master script (with simulation parameters) that executes entire analysis (simulates, plots in `figures/` and saves in `data/`)  
+`master.R` - master script (with simulation parameters) that executes entire analysis
+`src/` - all source code for analysis, including functions (`functions.R`) and plot code (`plot_*.R`)
 `src/functions.R` - functions called by master script  
 `src/tests.R` - diagnostics to test major functions  
-`figures` - plots and movies of simulation results  
-`data` - output from simulations  
-`wrk` - development sandbox  
+`runs/` - data and figures from each model run
+`cache` - cached data (currently just tide data)
+`reports/` - presentations and reports
+`wrk/` - development sandbox  
+
+## Running the job remotely (on kaos)
+The movement simulations are computationally intensive. Processing speed can be dramatically improved by running the simulations in parallel on a multi-core machine. Parallel processing increases speed by about a factor of two on my 4 core machine. More cores should provide more speed (to a point). `kaos` is a 24 core linux machine at Dal that should provide some extra speed. At first glance using `kaos` appears to increase speed by another factor of 2 relative to parallelized runs on my laptop.
+
+1. SSH into anchor (use dal password at prompt)
+```
+ssh anchor
+```
+2. SSH into kaos (use dal password at prompt)
+```
+ssh kaos.phys.ocean.dal.ca
+```
+3. Move to project directory
+```
+cd Projects/rw_sim/
+```
+4. Run analysis in background
+```
+nohup Rscript -e "source('master.R')" &
+```
+The job is now running and all that would appear in the console is written to `nohup.out`. Try to remember to record the PID, so the process can be killed later if needed.
+5. Verify model is running
+```
+cat nohup.out
+```
+6. Close terminal, and wait for the job to finish!

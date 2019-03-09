@@ -34,32 +34,6 @@ ggplot(tst)+
 ggplot(tst)+
   geom_path(aes(x = t, y = dfc))
 
-
-# acoustic detection function ---------------------------------------------
-
-L = 1
-x0 = 10
-k = -0.5
-
-# detection function
-xx = seq(0,25,0.1)
-yy = detection_function(x = xx, L = L, x0 = x0, k = k)
-
-ggplot(data.frame(xx,yy))+
-  geom_path(aes(x=xx,y=yy))
-
-tst = init_acoustic(nrws = 1e5, L = L, x0 = x0, k = k)
-
-# histogram
-ggplot(tst)+
-  geom_histogram(aes(x=rngs/1e3), binwidth=1)
-
-# 2d bin
-ggplot(tst)+
-  geom_bin2d(aes(x=x0/1e3,y=y0/1e3), binwidth=1)+
-  coord_equal()
-
-
 # parallel processing -----------------------------------------------------
 
 system.time({
@@ -271,3 +245,22 @@ ggplot()+
   facet_wrap(~platform)+
   labs(x = 'Easting [km]', y = 'Northing [km]', color = 'Quantile')+
   theme_bw()
+
+# master ------------------------------------------------------------------
+
+run_rw_sim(
+  name = 'test',
+  description = 'quick test model run',
+  nrws = 1e3,
+  hrs = 12,
+  nt = 3600,
+  bhs = c('linear', 'traveling', 'feeding', 'socializing', 'random'),
+  tide_lat = 48,
+  tide_lon = -63,
+  tide_t0 = as.POSIXct('2018-06-01', tz='UTC'),
+  L = 1,
+  x0 = 10,
+  k = -0.6,
+  visual_radius = 100,
+  run_parallel = FALSE
+)
