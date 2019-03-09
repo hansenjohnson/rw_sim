@@ -46,7 +46,7 @@ p1 = ggplot(dq)+
   theme_bw()+
   theme(legend.position = "bottom", legend.direction = 'horizontal')
 
-ggsave(plot = p1,filename = 'figures/range_probability.png', width = 10, height = 8.5, dpi = 300)
+ggsave(plot = p1,filename = 'figures/range_probability.png', width = 8, height = 6, dpi = 300)
 
 # The probability that a whale in a given behavioural state (right) is within a given range
 # of the incident observation location (top) over 96 hours following the observation

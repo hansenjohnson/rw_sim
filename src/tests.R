@@ -34,22 +34,65 @@ ggplot(tst)+
 ggplot(tst)+
   geom_path(aes(x = t, y = dfc))
 
+
+# acoustic detection function ---------------------------------------------
+
+L = 1
+x0 = 10
+k = -0.5
+
+# detection function
+xx = seq(0,25,0.1)
+yy = detection_function(x = xx, L = L, x0 = x0, k = k)
+
+ggplot(data.frame(xx,yy))+
+  geom_path(aes(x=xx,y=yy))
+
+tst = init_acoustic(nrws = 1e5, L = L, x0 = x0, k = k)
+
+# histogram
+ggplot(tst)+
+  geom_histogram(aes(x=rngs/1e3), binwidth=1)
+
+# 2d bin
+ggplot(tst)+
+  geom_bin2d(aes(x=x0/1e3,y=y0/1e3), binwidth=1)+
+  coord_equal()
+
+
+# parallel processing -----------------------------------------------------
+
+system.time({
+  tst = rw_sims(nrws = 1e3, bh = 'feeding', hrs = 2, platform = 'visual', run_parallel = TRUE)  
+})
+
+system.time({
+  tst = rw_sims(nrws = 1e3, bh = 'feeding', hrs = 2, platform = 'visual', run_parallel = FALSE)  
+})
+
 # multiple whales ---------------------------------------------------------
 
 # process
-tst = rw_sims(nrws = 1e3, bh = 'feeding', hrs = 2, platform = 'acoustic')
+tst = rw_sims(nrws = 1e2, bh = 'feeding', hrs = 2, platform = 'visual', run_parallel = TRUE)
 
-# plot map of initial positions
+# scatterplot of initial positions
 tst %>%
   filter(t == 0) %>%
   ggplot(aes(x=x,y=y))+
   geom_point(alpha=0.05)
 
+# bin initial position
+tst %>%
+  filter(t == 0) %>%
+  ggplot(aes(x=x,y=y))+
+  geom_bin2d()+
+  scale_fill_viridis_c()
+
 # plot histogram of initial ranges
 tst %>%
   filter(t == 0) %>%
   ggplot(aes(x=dfc))+
-  geom_histogram(binwidth = 1)
+  geom_histogram()
 
 # plot map
 ggplot(tst)+
@@ -95,7 +138,7 @@ ggplot(tst)+
 # platform comparison -----------------------------------------------------
 
 # process
-tst = compare_rw_sims(nrws = 100, hrs = 8, bh = 'feeding')
+tst = compare_rw_sims(nrws = 100, hrs = 1, bh = 'feeding')
 
 # plot map
 ggplot(tst)+
@@ -159,7 +202,7 @@ distance_plot(df = tst, bh = 'feeding')
 tst = compare_rw_sims(nrws = 100, hrs = 12,nt = 60, bh = 'feeding')
 
 # process movie
-make_movie(df = tst, bh = 'test1', movie_speed = 7)
+make_movie(df = df, bh = 'test1', movie_speed = 7)
 
 # movie2 ------------------------------------------------------------------
 

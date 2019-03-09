@@ -14,7 +14,7 @@ library(tidyverse)
 source('src/functions.R')
 
 # reproducible results
-set.seed(123)
+set.seed(116)
 
 # process -----------------------------------------------------------------
 
@@ -56,6 +56,7 @@ plot_path = function(bhv, df=df,pts=pts){
   df_i = subset(df,bh==bhv)
   pts_i = subset(pts,bh==bhv)
   lim = max(df_i$dfc)/1e3
+  # lim = 20
   
   pp = ggplot()+
     geom_path(data = df_i,aes(x=x,y=y), alpha = 0.5)+
@@ -78,6 +79,7 @@ rn = plot_path(bhv = 'Random',df=df,pts=pts)
 ln = plot_path(bhv = 'Linear',df=df,pts=pts)
 
 # save
-png(filename = 'figures/example_tracks.png', width = 10, height = 8, units = 'in', res = 250)
-grid.arrange(ln,tr,fd,sc,rn, ncol=3)
+png(filename = 'figures/example_tracks.png', width = 7, height = 4, units = 'in', res = 300)
+# grid.arrange(ln,tr,fd,sc,rn, ncol=3)
+grid.arrange(tr,fd,sc, ncol=3)
 dev.off()

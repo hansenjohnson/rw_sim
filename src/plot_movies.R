@@ -2,10 +2,9 @@
 
 source('src/functions.R')
 
-bhv = c('linear', 'traveling', 'feeding', 'socializing', 'random')
-# bhv = c('random')
+bhv = c('traveling', 'feeding', 'socializing','random', 'linear')
 for(ii in seq_along(bhv)){
   load(paste0('data/', bhv[ii], '.rda'))
   
-  make_movie_q(df = df, bh = bhv[ii])
+  make_movie(df = df, bh = bhv[ii])
 }

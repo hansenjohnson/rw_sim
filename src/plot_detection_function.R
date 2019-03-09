@@ -12,17 +12,9 @@ df_i = filter(df, t == 0 & platform == 'acoustic')
 
 # logistic regression -----------------------------------------------------
 
-# parameters
-L = 1     # curve's maximum value
-xx0 = 10  # value of midpoint
-k = -.3   # logistic growth rate (curve steepness)
-xx = seq(from = 0, to = 25, by = 1) # range vector
-
-# construct detection curve
-yy = L/(1+exp(-1*k*(xx-xx0)))
-
-# sample ranges
-rngs = sample(xx, size = nrws, replace = TRUE, prob = yy/sum(yy))*1e3
+# range vector
+xx = seq(from = 0, to = 25, by = 0.1) # range vector
+yy = detection_function(x = xx, x0 = 10)
 
 # plot --------------------------------------------------------------------
 

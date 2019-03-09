@@ -28,23 +28,23 @@ td = tibble(
 
 p1 = ggplot(td)+
   geom_path(aes(x = time, y = z))+
-  labs(x = NULL, y = 'Elevation [m]')+
+  labs(x = NULL, y = 'Elev. [m]')+
   theme_bw()+
   theme(axis.text.x=element_blank())
 
 p2 = ggplot(td)+
   geom_path(aes(x = time, y = u))+
-  labs(x = NULL, y = 'Horizontal velocity [m/s]')+
+  labs(x = NULL, y = 'Horz. vel. [m/s]')+
   theme_bw()+
   theme(axis.text.x=element_blank())
 
 p3 = ggplot(td)+
   geom_path(aes(x = time, y = du))+
-  labs(x = NULL, y = 'Horizontal displacement [m]')+
+  labs(x = NULL, y = 'Horz. disp. [m]')+
   theme_bw()
 
 # combine and save
-png(filename = 'figures/tide.png', width = 10, height = 8, units = 'in', res = 300)
+png(filename = 'figures/tide.png', width = 7, height = 5, units = 'in', res = 300)
 grid.newpage()
 grid.draw(rbind(ggplotGrob(p1), ggplotGrob(p2), ggplotGrob(p3), size = "last"))
 dev.off()
