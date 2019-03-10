@@ -59,3 +59,7 @@ run_rw_sim(
   visual_radius = 100,
   run_parallel = TRUE
 )
+
+# plot movies -------------------------------------------------------------
+
+source('src/plot_movies.R')
