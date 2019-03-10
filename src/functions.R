@@ -4,11 +4,11 @@
 # setup -------------------------------------------------------------------
 
 # libraries
-require(oce)
-require(tidyverse)
-require(gridExtra)
-require(parallel)
-require(overlapping)
+suppressPackageStartupMessages(library(oce))
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(gridExtra))
+suppressPackageStartupMessages(library(parallel))
+suppressPackageStartupMessages(library(overlapping))
 
 # functions ---------------------------------------------------------------
 
@@ -189,18 +189,18 @@ init_visual = function(nrws=1e3, radius = 1e2){
   # convert to xy
   x=r*cos(a)
   y=r*sin(a)
-
+  
   # return data
   out = data.frame(x=round(x),y=round(y))
 }
 
 rw_sims = function(ini = data.frame(x0=runif(1e2,1,10),y0=runif(1e2,1,10)),
-                    hrs = 48, 
-                    bh = 'feeding', 
-                    platform = 'acoustic', 
-                    nt = 300, 
-                    td = NULL,
-                    run_parallel = TRUE){
+                   hrs = 48, 
+                   bh = 'feeding', 
+                   platform = 'acoustic', 
+                   nt = 300, 
+                   td = NULL,
+                   run_parallel = TRUE){
   # simulate movements of whale field initialized with given detection function
   
   # determine number of whales
@@ -227,12 +227,15 @@ rw_sims = function(ini = data.frame(x0=runif(1e2,1,10),y0=runif(1e2,1,10)),
     
     message('Running in parallel with ', numCores, ' cores...')
     
-    DF = mclapply(X = nseq, FUN = function(i){rw_sim(x0=ini$x[i],y0=ini$y[i],hrs=hrs,bh=bh,nt=nt,td=td)}, 
-                  mc.cores = numCores)
+    DF = mclapply(X = nseq, FUN = function(i){
+      rw_sim(x0=ini$x[i],y0=ini$y[i],hrs=hrs,bh=bh,nt=nt,td=td)
+    }, mc.cores = numCores)
   } else {
-    DF = lapply(X = nseq, FUN = function(i){rw_sim(x0=ini$x[i],y0=ini$y[i],hrs=hrs,bh=bh,nt=nt,td=td)})
+    DF = lapply(X = nseq, FUN = function(i){
+      rw_sim(x0=ini$x[i],y0=ini$y[i],hrs=hrs,bh=bh,nt=nt,td=td)
+    })
   }
-
+  
   # flatten list to combine all whales
   df = bind_rows(DF, .id = 'id')
   
@@ -623,9 +626,9 @@ run_rw_sim = function(
     bh = bhs[ii]
     
     # run movement simulations
-    iaco = rw_sims(ini=ini_aco,hrs=hrs,bh=bh,platform='acoustic', 
+    iaco = rw_sims(ini=ini_aco,hrs=hrs,bh=bh,platform='acoustic', td = td,
                    nt=nt,run_parallel=run_parallel)
-    ivis = rw_sims(ini=ini_vis,hrs=hrs,bh=bh,platform='visual', 
+    ivis = rw_sims(ini=ini_vis,hrs=hrs,bh=bh,platform='visual',  td = td,
                    nt=nt,run_parallel=run_parallel)
     df = bind_rows(iaco,ivis)
     
