@@ -9,7 +9,6 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(gridExtra))
 suppressPackageStartupMessages(library(parallel))
 suppressPackageStartupMessages(library(overlapping))
-suppressPackageStartupMessages(library(sf))
 suppressPackageStartupMessages(library(raster))
 
 # functions ---------------------------------------------------------------
