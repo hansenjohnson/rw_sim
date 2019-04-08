@@ -9,6 +9,8 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(gridExtra))
 suppressPackageStartupMessages(library(parallel))
 suppressPackageStartupMessages(library(overlapping))
+suppressPackageStartupMessages(library(sf))
+suppressPackageStartupMessages(library(raster))
 
 # functions ---------------------------------------------------------------
 
@@ -271,17 +273,96 @@ calc_distance_m = function(df){
   return(mn)
 }
 
-calc_distance_q = function(df){
+calc_distance_q = function(df,lower=0.25,upper=0.75){
   # compute distance quantiles at each timestep
   dq = df %>%
     group_by(t, platform) %>%
     summarize(
-      q25 = quantile(r,0.25),
-      q50 = quantile(r,0.5),
-      q75 = quantile(r,0.75)
+      lwr = quantile(r,lower),
+      med = quantile(r,0.5),
+      upr = quantile(r,upper)
     )
   
   return(dq)
+}
+
+calc_overlap = function(df, hrs = seq(from = 0,to = 96,by = 1)){
+  
+  ovl = rep(0, length(hrs))
+  for(ll in seq_along(hrs)){
+    
+    # isolate hr
+    df_i = filter(df, t == hrs[ll])
+    
+    # pull range
+    a = df_i %>% filter(platform == 'acoustic') %>% pull(r)
+    v = df_i %>% filter(platform == 'visual') %>% pull(r)
+    
+    # calc overlap
+    dl = list(acoustic = a, visual = v)
+    ovl[ll] = overlap(dl, plot = FALSE)$OV
+  }
+  
+  out = data.frame(hrs, ovl)
+  return(out)
+}
+
+calc_ks = function(df, hrs = seq(from = 0,to = 96,by = 1)){
+  
+  ks = rep(0, length(hrs))
+  for(ll in seq_along(hrs)){
+    
+    # isolate hr
+    df_i = filter(df, t == hrs[ll])
+    
+    # pull range
+    a = df_i %>% filter(platform == 'acoustic') %>% pull(r)
+    v = df_i %>% filter(platform == 'visual') %>% pull(r)
+    
+    # calc ks test
+    ks[ll] = ks.test(x = a, y = v, alternative = "two.sided")$p.value
+  }
+  
+  out = data.frame(hrs, ks)
+  return(out)
+}
+
+calc_acoustic_residuals = function(df, hrs = seq(from = 0,to = 96, by = 1), max_r = 200, grid_res = 5, n_tot = 1e5){
+  
+  # build template raster
+  template = raster(xmn = -max_r, xmx = max_r, ymn = -max_r, ymx = max_r, resolution = c(grid_res,grid_res))
+  
+  ar = rep(0, length(hrs))
+  pb = txtProgressBar(min = 1, max = length(hrs), style = 3)
+  for(ii in seq_along(hrs)){
+    
+    # isolate hr
+    df_i = filter(df, t == hrs[ii])
+    
+    # split visual and acoustic data
+    a_df = df_i %>% filter(platform == 'acoustic') %>% transmute(x=x,y=y)
+    v_df = df_i %>% filter(platform == 'visual') %>% transmute(x=x,y=y)
+    
+    # build presence raster
+    a_presence = rasterize(a_df, template, field = 1, background = 0)
+    v_presence = rasterize(v_df, template, field = 1, background = 0)
+    av_presence = a_presence - v_presence
+    
+    # build count raster
+    a_count = rasterize(a_df, template, field = 1, fun = "count")
+    
+    # calculate acoustic residual (count of av_presence)
+    a_residual = a_count*av_presence
+    
+    # calculate proportion of residual
+    ar[ii] = cellStats(a_residual, stat = 'sum')/n_tot
+    
+    # update progress bar
+    setTxtProgressBar(pb, ii)
+  }
+  
+  out = data.frame(hrs, ar)
+  return(out)
 }
 
 make_movie = function(df, bh, movie_speed = 7, fig_dir){
@@ -612,7 +693,12 @@ run_rw_sim = function(
   
   ## get tide data ##
   
-  td = get_tide(longitude=tide_lon,latitude=tide_lat,t0=tide_t0,hrs=hrs)
+  if(is.na(tide_lat)|is.na(tide_lon)|is.na(tide_t0)){
+    td = NA  
+    message('Omitting tidal current')
+  } else {
+    td = get_tide(longitude=tide_lon,latitude=tide_lat,t0=tide_t0,hrs=hrs)  
+  }
   
   ## initialize whale field ##
   
@@ -642,17 +728,17 @@ run_rw_sim = function(
   
   ## plot results ##
   
-  # plot detection functions
-  plot_init_acoustic(ini = ini_aco, L = L, x0 = x0, k = k, fig_dir = fig_dir)
-  plot_init_visual(ini = ini_vis, visual_radius = visual_radius, fig_dir = fig_dir)
-  
-  # plot timeseries
-  plot_timeseries(bhs = c('Traveling','Feeding','Socializing'), 
-                  data_dir = data_dir, fig_dir = fig_dir)
-  
-  # plot range probability
-  plot_range_probability(bhs = c('Traveling','Feeding','Socializing'), 
-                         data_dir = data_dir, fig_dir = fig_dir)
+  # # plot detection functions
+  # plot_init_acoustic(ini = ini_aco, L = L, x0 = x0, k = k, fig_dir = fig_dir)
+  # plot_init_visual(ini = ini_vis, visual_radius = visual_radius, fig_dir = fig_dir)
+  # 
+  # # plot timeseries
+  # plot_timeseries(bhs = c('Traveling','Feeding','Socializing'), 
+  #                 data_dir = data_dir, fig_dir = fig_dir)
+  # 
+  # # plot range probability
+  # plot_range_probability(bhs = c('Traveling','Feeding','Socializing'), 
+  #                        data_dir = data_dir, fig_dir = fig_dir)
   
   # calculate time elapsed
   toc = round(Sys.time()-tic, 2)
