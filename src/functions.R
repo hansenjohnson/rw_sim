@@ -694,7 +694,7 @@ run_rw_sim = function(
   
   if(is.na(tide_lat)|is.na(tide_lon)|is.na(tide_t0)){
     td = NULL
-    warning('Omitting tidal current')
+    message('Omitting tidal current')
   } else {
     td = get_tide(longitude=tide_lon,latitude=tide_lat,t0=tide_t0,hrs=hrs)  
   }
