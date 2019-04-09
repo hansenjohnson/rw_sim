@@ -15,9 +15,9 @@ run_rw_sim(
   tide_lat = NA,
   tide_lon = NA,
   tide_t0 = NA,
-  L = 1,
+  L = 1.13,
   x0 = 5,
-  k = -0.5,
+  k = -0.4,
   visual_radius = 100,
   run_parallel = TRUE
 )
@@ -34,7 +34,7 @@ run_rw_sim(
   tide_lat = NA,
   tide_lon = NA,
   tide_t0 = NA,
-  L = 1,
+  L = 1.045,
   x0 = 10,
   k = -0.3,
   visual_radius = 100,
@@ -53,13 +53,19 @@ run_rw_sim(
   tide_lat = NA,
   tide_lon = NA,
   tide_t0 = NA,
-  L = 1,
-  x0 = 20,
-  k = -0.3,
+  L = 1.02,
+  x0 = 15,
+  k = -0.25,
   visual_radius = 100,
   run_parallel = TRUE
 )
 
-# plot movies -------------------------------------------------------------
+# plot figures ------------------------------------------------------------
 
-source('src/plot_movies.R')
+source('src/f_example_tracks.R')
+source('src/f_detection_function.R')
+source('src/f_time_space.R')
+source('src/f_timeseries.R')
+source('src/f_range_probability.R')
+
+
