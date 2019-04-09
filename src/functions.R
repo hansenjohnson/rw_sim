@@ -693,8 +693,8 @@ run_rw_sim = function(
   ## get tide data ##
   
   if(is.na(tide_lat)|is.na(tide_lon)|is.na(tide_t0)){
-    td = NA  
-    message('Omitting tidal current')
+    td = NULL
+    warning('Omitting tidal current')
   } else {
     td = get_tide(longitude=tide_lon,latitude=tide_lat,t0=tide_t0,hrs=hrs)  
   }
@@ -724,21 +724,7 @@ run_rw_sim = function(
     # clear memory
     rm(iaco,ivis,df)
   }
-  
-  ## plot results ##
-  
-  # # plot detection functions
-  # plot_init_acoustic(ini = ini_aco, L = L, x0 = x0, k = k, fig_dir = fig_dir)
-  # plot_init_visual(ini = ini_vis, visual_radius = visual_radius, fig_dir = fig_dir)
-  # 
-  # # plot timeseries
-  # plot_timeseries(bhs = c('Traveling','Feeding','Socializing'), 
-  #                 data_dir = data_dir, fig_dir = fig_dir)
-  # 
-  # # plot range probability
-  # plot_range_probability(bhs = c('Traveling','Feeding','Socializing'), 
-  #                        data_dir = data_dir, fig_dir = fig_dir)
-  
+
   # calculate time elapsed
   toc = round(Sys.time()-tic, 2)
   
