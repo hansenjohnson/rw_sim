@@ -13,7 +13,7 @@ plot_time_space = function(bhv){
   
   # plot breaks
   brks = c(1,10,1e2,1e3,1e4,1e5)
-  lim = max(df_i$dfc)
+  lim = max(df_i$r)
   
   plt = ggplot(df_i, aes(x=x, y=y))+
     geom_bin2d(aes(fill = stat(count)), binwidth = 1) +
