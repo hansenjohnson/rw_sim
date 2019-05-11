@@ -1,7 +1,6 @@
 ## tests ##
 
 source('src/functions.R')
-library(tidyverse)
 
 # single whale ------------------------------------------------------------
 
@@ -47,7 +46,7 @@ system.time({
 # multiple whales ---------------------------------------------------------
 
 # process
-tst = rw_sims(nrws = 1e2, bh = 'feeding', hrs = 2, platform = 'visual', run_parallel = TRUE)
+tst = rw_sims(bh = 'feeding', hrs = 2, platform = 'visual', run_parallel = TRUE)
 
 # scatterplot of initial positions
 tst %>%
