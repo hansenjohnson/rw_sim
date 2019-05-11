@@ -16,6 +16,9 @@ old/
 reports/
 runs
 
+# files
+notes.md
+
 # file types
 *.csv
 *.rds
