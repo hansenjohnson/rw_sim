@@ -3,11 +3,15 @@ Estimating uncertainty in right whale location following visual or acoustic dete
 
 ## Project structure
 
-`master.R` - master script (with simulation parameters) that executes entire analysis
-`src/` - all source code for analysis, including functions (`functions.R`) and plot code (`plot_*.R`)
-`runs/` - data and figures from each model run
-`cache` - cached data used across runs
-`reports/` - presentations and reports
+`master.R` - master script (with simulation parameters) that executes entire analysis  
+
+`src/` - all source code for analysis, including functions (`functions.R`) and plot code (`plot_*.R`)  
+
+`runs/` - data and figures from each model run  
+
+`cache` - cached data used across runs  
+
+`reports/` - presentations and reports  
 
 ## Working remotely
 
