@@ -9,7 +9,7 @@ Estimating uncertainty in right whale location following visual or acoustic dete
 
 `runs/` - data and figures from each model run  
 
-`cache` - cached data used across runs  
+`cache/` - cached data used across runs  
 
 `reports/` - presentations and reports  
 
