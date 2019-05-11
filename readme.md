@@ -5,7 +5,7 @@ Estimating uncertainty in right whale location following visual or acoustic dete
 
 `master.R` - master script (with simulation parameters) that executes entire analysis  
 
-`src/` - all source code for analysis, including functions (`functions.R`) and plot code (`plot_*.R`)  
+`src/` - all source code for analysis, including functions (`functions.R`) and scripts to produce various figures (`f_*.R`)  
 
 `runs/` - data and figures from each model run  
 
