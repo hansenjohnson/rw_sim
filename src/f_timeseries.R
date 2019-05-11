@@ -9,66 +9,79 @@ rns = c('long','medium','short')
 # list behaviours
 bhs = c('traveling','feeding','socializing')
 
+# cached output data file
+ts_file = 'cache/timeseries_data.rda'
+
 # setup -------------------------------------------------------------------
 
 source('src/functions.R')
 
 # process -----------------------------------------------------------------
 
-# extract data
-
-DF = vector('list', length(rns)*length(bhs))
-OVL = vector('list', length(DF))
-KS = vector('list', length(DF))
-AR = vector('list', length(DF))
-cnt = 1
-for(ii in seq_along(rns)){
-  irun = rns[ii]
-  for(jj in seq_along(bhs)){
-    ibhs = bhs[jj]
-    ifile = paste0('runs/',irun,'/data/',ibhs,'.rda')
-    
-    # read in data
-    message('Processing file ', cnt, ' of ', length(DF), ':\n', ifile)
-    
-    # read in data
-    message('   Loading...')
-    load(ifile)
-    
-    # calculate quantile distances
-    message('   Calculating distance quantiles...')
-    DF[[cnt]] = calc_distance_q(df, lower = 0.025, upper = 0.975) %>%
-      mutate(run = irun,
-             bh = ibhs)
-    
-    # calculate overlap between pdfs
-    message('   Calculating overlap between PDFs...')
-    OVL[[cnt]] = calc_overlap(df) %>%
-      mutate(run = irun,
-             bh = ibhs)
-    
-    # calculate ks test between pdfs
-    message('   Calculating KS test...')
-    KS[[cnt]] = calc_ks(df) %>%
-      mutate(run = irun,
-             bh = ibhs)
-    
-    # calculate acoustic residuals
-    message('   Calculating acoustic residuals...')
-    AR[[cnt]] = calc_acoustic_residuals(df) %>%
-      mutate(run = irun,
-             bh = ibhs)
-    
-    cnt = cnt+1
-    message('\nDone!')
+if(!file.exists(ts_file)){
+  
+  # extract data
+  DF = vector('list', length(rns)*length(bhs))
+  OVL = vector('list', length(DF))
+  KS = vector('list', length(DF))
+  AR = vector('list', length(DF))
+  cnt = 1
+  for(ii in seq_along(rns)){
+    irun = rns[ii]
+    for(jj in seq_along(bhs)){
+      ibhs = bhs[jj]
+      ifile = paste0('runs/',irun,'/data/',ibhs,'.rda')
+      
+      # read in data
+      message('Processing file ', cnt, ' of ', length(DF), ':\n', ifile)
+      
+      # read in data
+      message('   Loading...')
+      load(ifile)
+      
+      # calculate quantile distances
+      message('   Calculating distance quantiles...')
+      DF[[cnt]] = calc_distance_q(df, lower = 0.025, upper = 0.975) %>%
+        mutate(run = irun,
+               bh = ibhs)
+      
+      # calculate overlap between pdfs
+      message('   Calculating overlap between PDFs...')
+      OVL[[cnt]] = calc_overlap(df) %>%
+        mutate(run = irun,
+               bh = ibhs)
+      
+      # calculate ks test between pdfs
+      message('   Calculating KS test...')
+      KS[[cnt]] = calc_ks(df) %>%
+        mutate(run = irun,
+               bh = ibhs)
+      
+      # calculate acoustic residuals
+      message('   Calculating acoustic residuals...')
+      AR[[cnt]] = calc_acoustic_residuals(df) %>%
+        mutate(run = irun,
+               bh = ibhs)
+      
+      cnt = cnt+1
+      message('\nDone!')
+    }
   }
+  
+  # combine
+  df = bind_rows(DF)
+  ovl = bind_rows(OVL)
+  ks = bind_rows(KS)
+  ar = bind_rows(AR)
+  
+  # save data
+  save(df,ovl,ks,ar, file = ts_file)
+  
+} else {
+  message('Using data saved in: ', ts_file)
+  message('Delete to re-process...')
+  load(ts_file)
 }
-
-# combine
-df = bind_rows(DF)
-ovl = bind_rows(OVL)
-ks = bind_rows(KS)
-ar = bind_rows(AR)
 
 # calculate overlap by group
 ov = ovl %>%
@@ -104,9 +117,6 @@ min_aco = df %>%
 
 print(min_aco)
 
-# save data
-save(df,ovl,ks,ar, file = 'figures/f_timeseries_data.rda')
-
 # plot --------------------------------------------------------------------
 
 # plot overlap
@@ -138,13 +148,15 @@ ggsave(p3, filename = 'figures/s_acoustic_residuals.png', width = 10, height = 8
 
 # timeseries with overlap and residuals -----------------------------------
 
-# # define factors for plot order
-# df$bh = factor(df$bh)
-# df$bh = factor(df$bh, levels = c('traveling', 'feeding', 'socializing'), 
-#                labels = c('Traveling', 'Feeding', 'Socializing'), ordered = T)
-# df$run = factor(df$run)
-# df$run = factor(df$run, labels = c('Long', 'Medium', 'Short'), ordered = T)
+# define factors for plot order
+df$bh = factor(df$bh)
+df$bh = factor(df$bh, levels = c('traveling', 'feeding', 'socializing'), ordered = T)
+gar$bh = factor(gar$bh)
+gar$bh = factor(gar$bh, levels = c('traveling', 'feeding', 'socializing'), ordered = T)
+ov$bh = factor(ov$bh)
+ov$bh = factor(ov$bh, levels = c('traveling', 'feeding', 'socializing'), ordered = T)
 
+# plot
 p4 = ggplot(df)+
   geom_ribbon(aes(x=t, ymin = lwr, ymax = upr, fill=platform),
               color = NA, alpha = 0.3)+
