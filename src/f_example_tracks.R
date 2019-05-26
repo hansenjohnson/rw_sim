@@ -123,3 +123,8 @@ m = rbind(c(1,1,1,1,2,2),
 png(filename = 'figures/f_example_tracks.png', width = 9, height = 7, units = 'in', res = 300)
 grid.arrange(p1,p2,p3,layout_matrix = m)
 dev.off()
+
+# large version for presentations
+png(filename = 'figures/f_example_tracks-lrg.png', width = 5, height = 4, units = 'in', res = 300)
+grid.arrange(p1,p2,p3,layout_matrix = m)
+dev.off()

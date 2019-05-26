@@ -2,7 +2,6 @@
 # figure of time-space series for each behaviour
 
 library(tidyverse)
-library(gridExtra)
 
 # process -----------------------------------------------------------------
 
@@ -51,3 +50,8 @@ plt = ggplot(df, aes(x=x, y=y,z = stat(count)))+
 
 # save
 ggsave(plt, filename = 'figures/f_time_space.png', width = 12, height = 10, units = 'in', dpi = 300)
+
+# make large version for presentations
+plt_lrg = plt+
+  scale_x_continuous(breaks = c(-150,0,150))
+ggsave(plt_lrg, filename = 'figures/f_time_space-lrg.png', width = 7, height = 5, units = 'in', dpi = 300)
