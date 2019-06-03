@@ -5,35 +5,35 @@ source('src/functions.R')
 
 # run 1: short range ------------------------------------------------------
 
-# run_rw_sim(
-#   run_dir = 'runs/short',
-#   nrws = 1e5,
-#   hrs = 96,
-#   nt = 3600,
-#   bhs = c('traveling', 'feeding', 'socializing'),
-#   tide = NA,
-#   L = 1.13,
-#   x0 = 5,
-#   k = -0.4,
-#   radius = 100,
-#   run_parallel = TRUE
-# )
+run_rw_sim(
+  run_dir = 'runs/short',
+  nrws = 1e5,
+  hrs = 96,
+  nt = 3600,
+  bhs = c('traveling', 'feeding', 'socializing'),
+  tide = NA,
+  L = 1.13,
+  x0 = 5,
+  k = -0.4,
+  radius = 100,
+  run_parallel = TRUE
+)
 
 # run 2: medium range ------------------------------------------------------
 
-# run_rw_sim(
-#   run_dir = 'runs/medium',
-#   nrws = 1e5,
-#   hrs = 96,
-#   nt = 3600,
-#   bhs = c('traveling', 'feeding', 'socializing'),
-#   tide = NA,
-#   L = 1.045,
-#   x0 = 10,
-#   k = -0.3,
-#   radius = 100,
-#   run_parallel = TRUE
-# )
+run_rw_sim(
+  run_dir = 'runs/medium',
+  nrws = 1e5,
+  hrs = 96,
+  nt = 3600,
+  bhs = c('traveling', 'feeding', 'socializing'),
+  tide = NA,
+  L = 1.045,
+  x0 = 10,
+  k = -0.3,
+  radius = 100,
+  run_parallel = TRUE
+)
 
 # run 3: long range ------------------------------------------------------
 
