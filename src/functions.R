@@ -130,10 +130,13 @@ rw_sim = function(
   # calculate range from center
   df$r = sqrt(df$x^2 + df$y^2)
   
+  # add behaviour
+  df$bh = bh
+  
   return(df)
 }
 
-detection_function = function(x,L=1,x0=10,k=-0.5){
+detection_function = function(x,L=1.045,x0=10,k=-0.3){
   # Construct an acoustic detection function using a logistic curve
   # L = maximum Y value
   # x0 = value at midpoint
@@ -142,7 +145,7 @@ detection_function = function(x,L=1,x0=10,k=-0.5){
   return(y)
 }
 
-init_acoustic = function(nrws=1e3,L=1,x0=10,k=-0.5,max_radius=x0*2.5){
+init_acoustic = function(nrws=1e3,L=1.045,x0=10,k=-0.3,max_radius=x0*2.5){
   # initialize field of simulated whales with acoustic detection function
   
   # initialize values
@@ -169,8 +172,8 @@ init_acoustic = function(nrws=1e3,L=1,x0=10,k=-0.5,max_radius=x0*2.5){
       y=r*sin(a)
       
       # store
-      XX[cnt] = x
-      YY[cnt] = y
+      XX[cnt] = round(x,3)
+      YY[cnt] = round(y,3)
       cnt = cnt+1
     }
   }
@@ -243,15 +246,15 @@ rw_sims = function(ini = data.frame(x0=runif(1e2,1,10),y0=runif(1e2,1,10)),
   # add platform
   df$platform = platform
   
-  # convert time to hours
-  df$t = df$t/60/60
-  
-  # convert distance to kilometers
-  df$x = df$x/1e3
-  df$y = df$y/1e3
-  df$r = df$r/1e3
-  df$dst = df$dst/1e3
-  df$dpt = df$dpt/1e3
+  # # convert time to hours
+  # df$t = df$t/60/60
+  # 
+  # # convert distance to kilometers
+  # df$x = df$x/1e3
+  # df$y = df$y/1e3
+  # df$r = df$r/1e3
+  # df$dst = df$dst/1e3
+  # df$dpt = df$dpt/1e3
   
   # calculate time elapsed
   toc = round(Sys.time()-tic, 2)
