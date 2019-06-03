@@ -309,6 +309,7 @@ run_rw_sim = function(
   message('\n##############################')
   message('## NARW MOVEMENT SIMULATION ##')
   message('##############################\n')
+  message('\nWriting all data to: ', run_dir, '\n')
   
   # record start time
   tic = Sys.time()
