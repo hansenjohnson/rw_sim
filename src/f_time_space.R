@@ -5,19 +5,19 @@ library(tidyverse)
 
 # process -----------------------------------------------------------------
 
-load('runs/medium/data/traveling.rda')
+load('runs/medium/traveling.rda')
 tr_d = df %>% 
   filter(t %in% c(0,6,12,24,48,96)) %>%
   mutate(bh = 'Traveling')
 rm(df)
 
-load('runs/medium/data/feeding.rda')
+load('runs/medium/feeding.rda')
 fd_d = df %>% 
   filter(t %in% c(0,6,12,24,48,96)) %>%
   mutate(bh = 'Feeding')
 rm(df)
 
-load('runs/medium/data/socializing.rda')
+load('runs/medium/socializing.rda')
 sc_d = df %>% 
   filter(t %in% c(0,6,12,24,48,96)) %>%
   mutate(bh = 'Socializing')
@@ -39,7 +39,6 @@ df$platform = factor(df$platform, labels = c('Acoustic', 'Visual'))
 # plot
 plt = ggplot(df, aes(x=x, y=y,z = stat(count)))+
   geom_bin2d(aes(fill = stat(density)), binwidth = c(5,5)) +
-  # scale_fill_viridis_c(trans = "log", breaks = brks, labels = brks, limits=range(brks))+
   scale_fill_viridis_c(trans = "log",breaks = brks, labels = brks)+
   labs(x = 'Easting [km]', y = 'Northing [km]', fill = 'Probability')+
   facet_grid(bh+platform~t)+

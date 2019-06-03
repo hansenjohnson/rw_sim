@@ -24,7 +24,7 @@ for(ii in seq_along(rns)){
     ibhs = bhs[jj]
     
     # load data
-    ifile = paste0('runs/',irun,'/data/',ibhs,'.rda')
+    ifile = paste0('runs/',irun,'/',ibhs,'.rda')
     message('Processing file ', cnt, ' of ', length(DQ), ':\n', ifile)
     load(ifile)
     

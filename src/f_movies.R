@@ -25,7 +25,7 @@ for(ii in seq_along(rns)){
   irun = rns[ii]
   for(jj in seq_along(bhs)){
     ibhs = bhs[jj]
-    ifile = paste0('runs/',irun,'/data/',ibhs,'.rda')
+    ifile = paste0('runs/',irun,'/',ibhs,'.rda')
     
     # read in data
     message('Processing file ', cnt, ' of ', N, ':\n', ifile)
