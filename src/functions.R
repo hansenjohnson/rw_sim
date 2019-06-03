@@ -198,26 +198,25 @@ init_visual = function(nrws=1e3, radius = 1e2){
   out = data.frame(x=round(x),y=round(y))
 }
 
-rw_sims = function(ini = data.frame(x0=runif(1e2,1,10),y0=runif(1e2,1,10)),
+rw_sims = function(nrws = 1e2,
                    hrs = 48, 
                    bh = 'feeding', 
-                   platform = 'acoustic', 
                    nt = 300, 
                    td = NULL,
+                   L = 1.045,
+                   x0 = 10,
+                   k = -0.3,
+                   radius = 1e2,
                    run_parallel = TRUE){
   # simulate movements of whale field initialized with given detection function
   
-  # determine number of whales
-  nrws = nrow(ini)
-  
-  # message
+  # startup message
   message('\n## NARW MOVEMENT MODEL RUN ##\n')
   message('Input parameters:')
   message('   number of whales: ', nrws)
   message('   number of hours: ', hrs)
   message('   time resolution [sec]: ', nt)
   message('   number of timesteps: ', hrs*60*60/nt)
-  message('   platform type: ', platform)
   message('   movement type: ', bh)
   message('Simulating whale movements...')
   
@@ -225,42 +224,128 @@ rw_sims = function(ini = data.frame(x0=runif(1e2,1,10),y0=runif(1e2,1,10)),
   nseq = seq(from = 1, to = nrws, by = 1)
   tic = Sys.time()
   
+  # initial starting positions
+  ini = data.frame(x = rep(0, nrws), y = rep(0, nrws))
+  iaco = init_acoustic(nrws = nrws, L = L, x0 = x0, k = k)
+  ivis = init_visual(nrws = nrws, radius = radius)
+  
   if(run_parallel){
     # determine number of cores available
     numCores = detectCores()
     
     message('Running in parallel with ', numCores, ' cores...')
     
+    # model movements
     DF = mclapply(X = nseq, FUN = function(i){
       rw_sim(x0=ini$x[i],y0=ini$y[i],hrs=hrs,bh=bh,nt=nt,td=td)
     }, mc.cores = numCores)
+    
   } else {
+    
+    # model movements
     DF = lapply(X = nseq, FUN = function(i){
       rw_sim(x0=ini$x[i],y0=ini$y[i],hrs=hrs,bh=bh,nt=nt,td=td)
     })
+    
+  }
+  
+  # shift tracks to starting position based on detection functions
+  for(ii in 1:nrws){
+    iv = DF[[ii]] %>%
+      mutate(
+        x=x+ivis$x[ii],
+        y=y+ivis$y[ii],
+        platform = 'visual'
+      )
+    ia = DF[[ii]] %>%
+      mutate(
+        x=x+iaco$x[ii],
+        y=y+iaco$y[ii],
+        platform = 'acoustic'
+      )
+    DF[[ii]] = bind_rows(iv,ia)
   }
   
   # flatten list to combine all whales
   df = bind_rows(DF, .id = 'id')
   
-  # add platform
-  df$platform = platform
+  # update ranges
+  df$r = sqrt(df$x^2 + df$y^2)
   
-  # # convert time to hours
-  # df$t = df$t/60/60
-  # 
-  # # convert distance to kilometers
-  # df$x = df$x/1e3
-  # df$y = df$y/1e3
-  # df$r = df$r/1e3
-  # df$dst = df$dst/1e3
-  # df$dpt = df$dpt/1e3
+  # convert time to hours
+  df$t = df$t/60/60
+
+  # convert distance to kilometers
+  df$x = df$x/1e3
+  df$y = df$y/1e3
+  df$r = df$r/1e3
+  df$dst = df$dst/1e3
+  df$dpt = df$dpt/1e3
   
   # calculate time elapsed
   toc = round(Sys.time()-tic, 2)
   message('Done! Time elapsed: ', format(toc))
   
   return(df)
+}
+
+run_rw_sim = function(
+  run_dir = 'tests/master_run',
+  nrws = 1e2,
+  hrs = 24,
+  nt = 3600,
+  bhs = c('linear', 'traveling', 'feeding', 'socializing', 'random'),
+  tide = NA,
+  L = 1,
+  x0 = 10,
+  k = -0.5,
+  radius = 100,
+  run_parallel = TRUE
+){
+  
+  # create dir
+  if(!dir.exists(run_dir)){dir.create(run_dir, recursive = TRUE)}
+  
+  message('\n##############################')
+  message('## NARW MOVEMENT SIMULATION ##')
+  message('##############################\n')
+  
+  # record start time
+  tic = Sys.time()
+  
+  ## get tide data ##
+  
+  if(is.na(tide)){
+    td = NULL
+    message('Omitting tidal current')
+  } else {
+    td = get_tide(longitude=tide$lon,latitude=tide$lat,t0=tide$t0,hrs=hrs)  
+  }
+  
+  ## simulate whale movement ##
+  DF = vector('list', length(bhs))
+  for(ii in seq_along(bhs)){
+    bh = bhs[ii]
+    
+    # run movement simulations
+    df = rw_sims(nrws=nrws,hrs=hrs,bh=bh,td=td,nt=nt,L=L,x0=x0,k=k,
+                 radius=radius,run_parallel=run_parallel)
+    
+    # save run data
+    save(df,run_dir,nrws,hrs,nt,bh,tide,L,x0, k,radius,run_parallel,
+         file = paste0(run_dir, '/', bh, '.rda'))
+    
+    # clear memory
+    rm(df)
+  }
+  
+  # calculate time elapsed
+  toc = round(Sys.time()-tic, 2)
+  
+  message('\n#############################')
+  message('## SIMULATION COMPLETE :)  ##')
+  message('#############################\n')
+  message('Time elapsed: ', format(toc))
 }
 
 calc_distance_m = function(df){
@@ -660,79 +745,4 @@ plot_timeseries = function(bhs = c('Traveling','Feeding','Socializing'),
          height = 7, dpi = 300)
 }
 
-run_rw_sim = function(
-  name = 'test',
-  description = '',
-  nrws = 1e2,
-  hrs = 24,
-  nt = 3600,
-  bhs = c('linear', 'traveling', 'feeding', 'socializing', 'random'),
-  tide_lat = 48,
-  tide_lon = -63,
-  tide_t0 = as.POSIXct('2018-06-01', tz='UTC'),
-  L = 1,
-  x0 = 10,
-  k = -0.5,
-  visual_radius = 100,
-  run_parallel = TRUE
-){
-  
-  # define directories
-  run_dir = paste0('runs/', name, '/')
-  fig_dir = paste0(run_dir, 'figures/')
-  data_dir = paste0(run_dir, 'data/')
-  
-  # create dirs
-  if(!dir.exists(fig_dir)){dir.create(fig_dir, recursive = TRUE)}
-  if(!dir.exists(data_dir)){dir.create(data_dir, recursive = TRUE)}
-  
-  message('\n##############################')
-  message('## NARW MOVEMENT SIMULATION ##')
-  message('##############################\n')
-  
-  # record start time
-  tic = Sys.time()
-  
-  ## get tide data ##
-  
-  if(is.na(tide_lat)|is.na(tide_lon)|is.na(tide_t0)){
-    td = NULL
-    message('Omitting tidal current')
-  } else {
-    td = get_tide(longitude=tide_lon,latitude=tide_lat,t0=tide_t0,hrs=hrs)  
-  }
-  
-  ## initialize whale field ##
-  
-  ini_aco = init_acoustic(nrws=nrws,L=L,x0=x0,k=k)
-  ini_vis = init_visual(nrws=nrws,radius=visual_radius)
-  
-  ## simulate whale movement ##
-  
-  DF = vector('list', length(bhs))
-  for(ii in seq_along(bhs)){
-    bh = bhs[ii]
-    
-    # run movement simulations
-    iaco = rw_sims(ini=ini_aco,hrs=hrs,bh=bh,platform='acoustic', td = td,
-                   nt=nt,run_parallel=run_parallel)
-    ivis = rw_sims(ini=ini_vis,hrs=hrs,bh=bh,platform='visual',  td = td,
-                   nt=nt,run_parallel=run_parallel)
-    df = bind_rows(iaco,ivis)
-    
-    # save run data
-    save(df,name,description,nrws,hrs,nt,bh,tide_lat,tide_lon,tide_t0,L,x0,
-         k,visual_radius,run_parallel,file = paste0(data_dir, '/', bh, '.rda'))
-    
-    # clear memory
-    rm(iaco,ivis,df)
-  }
 
-  # calculate time elapsed
-  toc = round(Sys.time()-tic, 2)
-  
-  message('\n#############################')
-  message('## SIMULATION COMPLETE :)  ##')
-  message('#############################\n')
-  message('Time elapsed: ', format(toc))
-}
