@@ -15,6 +15,7 @@ wrk/
 old/
 reports/
 docs/
+tests/
 runs
 
 # files
