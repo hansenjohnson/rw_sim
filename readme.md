@@ -21,7 +21,14 @@ Move to the remote machine, make sure `src/` and `master.R` are up to date. In m
 ```
 nohup Rscript -e "source('master.R')" &
 ```
-The job is now running and all that would appear in the console is written to `nohup.out`. Try to remember to record the PID, so the process can be killed later if needed. You can verify the model is running using:
+The job is now running and all that would appear in the console is written to `nohup.out`.
+
+Record the PID here:
+```
+45522
+```
+
+You can verify the model is running using:
 ```
 cat nohup.out
 ```
