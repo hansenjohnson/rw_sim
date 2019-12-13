@@ -72,7 +72,7 @@ rw_sim = function(
   
   # define turn rate (deg / 10m)
   if(bh == 'feeding'){
-    tr = 22.1   
+    tr = 19.3  
   } else if(bh == 'traveling'){
     tr = 5.3   
   } else if(bh == 'socializing'){
