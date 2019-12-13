@@ -38,6 +38,7 @@ for(ii in seq_along(rns)){
     message('   Making movie...')
     make_movie(df = df, bh = ibhs, movie_speed = 7, fig_dir = fig_dir)
     
+    rm(df)
     cnt = cnt+1
     message('\nDone!')
   }
