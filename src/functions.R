@@ -58,11 +58,6 @@ rw_sim = function(
   # length time vector
   n = length(t)
   
-  # create blank tide vector
-  if(is.null(td)){
-    td = rep(0, n)
-  }
-  
   # calculate speeds
   spd = runif(min = 0, max = 1.23, n = n)
   
