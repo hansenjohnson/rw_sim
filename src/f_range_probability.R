@@ -14,7 +14,7 @@ cache_file = 'cache/range_data.rda'
 
 # setup -------------------------------------------------------------------
 
-source('src/functions.R')
+library(tidyverse)
 
 # process -----------------------------------------------------------------
 

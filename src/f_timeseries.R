@@ -14,7 +14,7 @@ cache_file = 'cache/timeseries_data.rda'
 
 # setup -------------------------------------------------------------------
 
-source('src/functions.R')
+library(tidyverse)
 
 # process -----------------------------------------------------------------
 
@@ -104,6 +104,8 @@ p1 = ggplot(df)+
   geom_ribbon(aes(x=t, ymin = lwr, ymax = upr, fill=platform),
               color = NA, alpha = 0.3)+
   geom_path(aes(x=t, y=med, color=platform), alpha = 1, size = 1)+
+  
+  # formatting
   facet_grid(bh~run, scales = "free")+
   labs(x = 'Time [hr]', y = 'Range [km]', fill = NULL, color = NULL)+
   scale_x_continuous(breaks = c(0,24,48,72,96))+
