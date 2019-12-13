@@ -51,12 +51,12 @@ run_rw_sim(
   run_parallel = TRUE
 )
 
-# plot figures ------------------------------------------------------------
+# visualize ---------------------------------------------------------------
 
+# figures
 source('src/f_example_tracks.R')
 source('src/f_detection_function.R')
 source('src/f_time_space.R')
 source('src/f_timeseries.R')
 source('src/f_range_probability.R')
 source('src/f_difference.R')
-source('src/f_movies.R')
