@@ -38,3 +38,6 @@ p1 = ggplot()+
 
 # save
 ggsave(p1, filename = 'figures/f_detection_function.png', width = 6, height = 4, dpi = 300)
+
+# larger plot for presentations
+ggsave(p1, filename = 'figures/f_detection_function-lrg.png', width = 4, height = 3, dpi = 300)

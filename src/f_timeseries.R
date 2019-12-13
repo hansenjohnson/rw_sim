@@ -36,16 +36,28 @@ if(!file.exists(cache_file)){
       message('   Loading...')
       load(ifile)
       
-      # calculate mean and standard deviation
+      # # calculate mean and standard deviation
+      # DF[[cnt]] = df %>%
+      #   group_by(t, platform) %>%
+      #   summarize(
+      #     er = sd(r, na.rm = T),
+      #     r = mean(r, na.rm = T),
+      #     run = irun,
+      #     bh = ibhs
+      #   )
+      
+      # calculate median and quantiles
       DF[[cnt]] = df %>%
         group_by(t, platform) %>%
         summarize(
-          er = sd(r, na.rm = T),
-          r = mean(r, na.rm = T),
+          lwr = quantile(r,0.25),
+          med = quantile(r,0.5),
+          upr = quantile(r,0.75),
           run = irun,
           bh = ibhs
         )
       
+      rm(df)
       cnt = cnt+1
       message('\nDone!')
     }
@@ -83,14 +95,22 @@ df$bh = factor(df$bh, levels = c('traveling', 'feeding', 'socializing'), ordered
 
 # plot
 p1 = ggplot(df)+
-  geom_ribbon(aes(x=t, ymin = r-er, ymax = r+er, fill=platform),
+  
+  # plot mean and sd
+  # geom_ribbon(aes(x=t, ymin = r-er, ymax = r+er, fill=platform),
+  #             color = NA, alpha = 0.3)+
+  
+  # plot quantiles
+  geom_ribbon(aes(x=t, ymin = lwr, ymax = upr, fill=platform),
               color = NA, alpha = 0.3)+
-  geom_path(aes(x=t, y=r, color=platform), alpha = 1, size = 1)+
+  geom_path(aes(x=t, y=med, color=platform), alpha = 1, size = 1)+
   facet_grid(bh~run, scales = "free")+
   labs(x = 'Time [hr]', y = 'Range [km]', fill = NULL, color = NULL)+
+  scale_x_continuous(breaks = c(0,24,48,72,96))+
   theme_bw()+
-  theme(legend.position = "bottom", legend.direction = 'horizontal', 
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
+  theme(legend.position = "bottom", legend.direction = 'horizontal')
 
 ggsave(p1, filename = 'figures/f_timeseries.png', width = 10, height = 8, dpi = 300)
+
+# large
+ggsave(p1, filename = 'figures/f_timeseries-lrg.png', width = 6, height = 5, dpi = 300)
