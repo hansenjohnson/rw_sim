@@ -8,7 +8,6 @@ suppressPackageStartupMessages(library(oce))
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(gridExtra))
 suppressPackageStartupMessages(library(parallel))
-suppressPackageStartupMessages(library(overlapping))
 suppressPackageStartupMessages(library(raster))
 
 # functions ---------------------------------------------------------------
