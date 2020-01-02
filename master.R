@@ -1,7 +1,13 @@
 ## rw_sim ##
 # Simulate right whale movement to compare visual and acoustic survey results
 
+# setup -------------------------------------------------------------------
+
+# load external functions
 source('src/functions.R')
+
+# define figure directory
+fig_dir = 'figures'
 
 # run 1: short range ------------------------------------------------------
 
@@ -50,7 +56,10 @@ run_rw_sim(
 
 # visualize ---------------------------------------------------------------
 
-# figures
+# create figure directory
+if(!dir.exists(fig_dir)){dir.create(fig_dir, recursive = TRUE)}
+
+# generate figures
 source('src/f_example_tracks.R')
 source('src/f_detection_function.R')
 source('src/f_time_space.R')
