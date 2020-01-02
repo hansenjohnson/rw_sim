@@ -278,16 +278,26 @@ run_rw_sim = function(
   for(ii in seq_along(bhs)){
     bh = bhs[ii]
     
-    # run movement simulations
-    df = rw_sims(nrws=nrws,hrs=hrs,bh=bh,nt=nt,L=L,x0=x0,k=k,
-                 radius=radius,run_parallel=run_parallel)
+    # define output file
+    ofile = paste0(run_dir, '/', bh, '.rda')
     
-    # save run data
-    save(df,run_dir,nrws,hrs,nt,bh,L,x0,k,radius,run_parallel,
-         file = paste0(run_dir, '/', bh, '.rda'))
-    
-    # clear memory
-    rm(df)
+    if(!file.exists(ofile)){
+      
+      # run movement simulations
+      df = rw_sims(nrws=nrws,hrs=hrs,bh=bh,nt=nt,L=L,x0=x0,k=k,
+                   radius=radius,run_parallel=run_parallel)
+      
+      # save run data
+      save(df,run_dir,nrws,hrs,nt,bh,L,x0,k,radius,run_parallel,
+           file = ofile)
+      
+      # clear memory
+      rm(df)
+      
+    } else {
+      message('\nUsing data in ', ofile)
+      message('Delete to re-process...\n')
+    }
   }
   
   # calculate time elapsed
