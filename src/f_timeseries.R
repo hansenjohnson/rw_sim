@@ -77,7 +77,8 @@ if(!file.exists(cache_file)){
 
 max_vis = df %>%
   group_by(run,bh) %>%
-  filter(t == 96 & run == 'medium' & platform == 'visual')
+  filter(t == 96 & run == 'medium' & platform == 'visual') %>%
+  mutate(iqr = upr-lwr)
 
 print(max_vis)
 
