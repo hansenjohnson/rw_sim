@@ -6,8 +6,9 @@
 # load external functions
 source('src/functions.R')
 
-# define figure directory
+# define directories
 fig_dir = 'figures'
+cac_dir = 'cache'
 
 # run 1: short range ------------------------------------------------------
 
@@ -58,6 +59,7 @@ run_rw_sim(
 
 # create figure directory
 if(!dir.exists(fig_dir)){dir.create(fig_dir, recursive = TRUE)}
+if(!dir.exists(cac_dir)){dir.create(cac_dir, recursive = TRUE)}
 
 # generate figures
 source('src/f_example_tracks.R')
