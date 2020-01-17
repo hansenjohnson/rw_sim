@@ -85,7 +85,7 @@ dq = dq %>%
 p1 = ggplot(dq)+
   geom_path(aes(x=t,y=p,group=grp,color=platform,linetype=run))+
   scale_linetype_manual(values = c('long' = 1, 'medium' = 2, 'short' = 3))+
-  scale_color_manual(values = c('acoustic' = 'grey50', 'visual' = 'black'))+
+  scale_color_manual(values = c('acoustic' = 'grey60', 'visual' = 'black'))+
   ylim(c(0,1))+
   facet_grid(bh~dist)+
   labs(x = 'Time [hr]', y = 'Probability', color = 'Platform:', linetype = 'Detection range:')+
