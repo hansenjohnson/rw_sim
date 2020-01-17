@@ -26,8 +26,7 @@ rm(df)
 # combine
 df = rbind(fd_d,tr_d,sc_d)
 
-# definitions
-# brks = c(1,10,1e2,1e3,1e4,1e5)
+# specify breaks
 brks = c(0.00001,0.0001,0.001,0.01,0.1)
 
 # define factors for plot order
@@ -49,8 +48,3 @@ plt = ggplot(df, aes(x=x, y=y,z = stat(count)))+
 
 # save
 ggsave(plt, filename = 'figures/f_time_space.png', width = 12, height = 10, units = 'in', dpi = 300)
-
-# make large version for presentations
-plt_lrg = plt+
-  scale_x_continuous(breaks = c(-150,0,150))
-ggsave(plt_lrg, filename = 'figures/f_time_space-lrg.png', width = 7, height = 5, units = 'in', dpi = 300)

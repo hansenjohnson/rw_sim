@@ -12,7 +12,7 @@ bhs = c('traveling','feeding','socializing')
 # cached output data file
 cache_file = 'cache/difference_data.rda'
 
-# number of right whales
+# number of right whales used in simulation
 nrws = 1e5
 
 # setup -------------------------------------------------------------------
@@ -102,45 +102,31 @@ dfs = df %>%
 
 # plot
 p1 = ggplot()+
-  geom_path(data = dfs, aes(x=t,y=r,group=id), alpha = 0.1)+
-  geom_path(data = mn, aes(x=t,y=r-er), color = 'red', linetype = 2)+
-  geom_path(data = mn, aes(x=t,y=r+er), color = 'red', linetype = 2)+
-  geom_path(data = mn, aes(x=t,y=r), color = 'red', size = 1)+
-  labs(x = 'Time [h]', y = 'Visual - Acoustic range [km]')+
-  geom_hline(yintercept = 0, col = 'grey', linetype = 1)+
-  facet_grid(bh~run)+
-  scale_x_continuous(breaks = c(0,24,48,72,96))+
-  theme_bw()
-
-ggsave(filename = 'figures/f_difference.png', plot = p1, width = 10, height = 8, dpi = 300)
-
-p1_mn = ggplot()+
-  # geom_path(data = dfs, aes(x=t,y=r,group=id), alpha = 0.1)+
+  geom_path(data = dfs, aes(x=t,y=r,group=id), color = 'darkgrey', alpha = 0.3)+
   geom_path(data = mn, aes(x=t,y=r-er), color = 'black', linetype = 2)+
   geom_path(data = mn, aes(x=t,y=r+er), color = 'black', linetype = 2)+
   geom_path(data = mn, aes(x=t,y=r), color = 'black', size = 1)+
   labs(x = 'Time [h]', y = 'Visual - Acoustic range [km]')+
-  geom_hline(yintercept = 0, col = 'grey', linetype = 1)+
+  geom_hline(yintercept = 0, col = 'lightgrey', linetype = 1)+
   facet_grid(bh~run)+
   scale_x_continuous(breaks = c(0,24,48,72,96))+
   theme_bw()
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 
-ggsave(filename = 'figures/f_difference-lrg.png', plot = p1_mn, width = 6, height = 5, dpi = 300)
+ggsave(filename = 'figures/f_difference.png', plot = p1, width = 10, height = 8, dpi = 300)
 
 # plot proportional differences -------------------------------------------
 
 # plot
 p2 = ggplot()+
-  geom_path(data = prp, aes(x=t,y=p,group=bh,color=bh))+
-  scale_color_manual(values = c('black', 'blue', 'red'))+
-  labs(x = 'Time [h]', y = 'Probability of higher uncertainty from visual detection', color = 'Behaviour')+
+  geom_path(data = prp, aes(x=t,y=p,group=bh,linetype=bh))+
+  scale_linetype_manual(values = c('traveling' = 1, 'feeding' = 2, 'socializing' = 3))+
+  labs(x = 'Time [h]', 
+       y = 'Probability of higher uncertainty from visual detection', 
+       linetype = 'Behaviour')+
   facet_wrap(~run, nrow = 1, ncol = 3)+
   scale_x_continuous(breaks = c(0,24,48,72,96))+
   theme_bw()
 
 # save
 ggsave(filename = 'figures/f_difference-proportion.png', plot = p2, width = 10, height = 4, dpi = 300)
-
-# save large version
-p3 = p2+labs(y='P of higher visual uncertainty', color = 'Behaviour:')+theme(legend.position = "bottom")
-ggsave(filename = 'figures/f_difference-proportion-lrg.png', plot = p3, width = 6, height = 3, dpi = 300)

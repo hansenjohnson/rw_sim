@@ -36,16 +36,6 @@ if(!file.exists(cache_file)){
       message('   Loading...')
       load(ifile)
       
-      # # calculate mean and standard deviation
-      # DF[[cnt]] = df %>%
-      #   group_by(t, platform) %>%
-      #   summarize(
-      #     er = sd(r, na.rm = T),
-      #     r = mean(r, na.rm = T),
-      #     run = irun,
-      #     bh = ibhs
-      #   )
-      
       # calculate median and quantiles
       DF[[cnt]] = df %>%
         group_by(t, platform) %>%
@@ -96,17 +86,9 @@ df$bh = factor(df$bh, levels = c('traveling', 'feeding', 'socializing'), ordered
 
 # plot
 p1 = ggplot(df)+
-  
-  # plot mean and sd
-  # geom_ribbon(aes(x=t, ymin = r-er, ymax = r+er, fill=platform),
-  #             color = NA, alpha = 0.3)+
-  
-  # plot quantiles
   geom_ribbon(aes(x=t, ymin = lwr, ymax = upr, fill=platform),
               color = NA, alpha = 0.3)+
   geom_path(aes(x=t, y=med, color=platform), alpha = 1, size = 1)+
-  
-  # formatting
   facet_grid(bh~run, scales = "free")+
   labs(x = 'Time [hr]', y = 'Range [km]', fill = NULL, color = NULL)+
   scale_x_continuous(breaks = c(0,24,48,72,96))+
@@ -114,6 +96,3 @@ p1 = ggplot(df)+
   theme(legend.position = "bottom", legend.direction = 'horizontal')
 
 ggsave(p1, filename = 'figures/f_timeseries.png', width = 10, height = 8, dpi = 300)
-
-# large
-ggsave(p1, filename = 'figures/f_timeseries-lrg.png', width = 6, height = 5, dpi = 300)

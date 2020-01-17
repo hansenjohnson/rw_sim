@@ -72,10 +72,20 @@ dq$bh = factor(dq$bh, levels = bhs, ordered = TRUE)
 # add column for plotting
 dq$grp = paste0(dq$platform,'-',dq$run)
 
+# display text stats
+dq %>% filter(dist == '25km' & t == 24 & bh == 'feeding')
+dq %>% filter(dist == '25km' & t == 24 & bh == 'socializing')
+
+# remove redundant visual data
+dq = dq %>% 
+  mutate(sbs = paste0(platform, ' ', run)) %>%
+  filter(!(sbs %in% c('visual medium', 'visual short')))
+
 # plot
 p1 = ggplot(dq)+
-  geom_path(aes(x=t,y=p,group=grp,color=platform, linetype=run))+
+  geom_path(aes(x=t,y=p,group=grp,color=platform,linetype=run))+
   scale_linetype_manual(values = c('long' = 1, 'medium' = 2, 'short' = 3))+
+  scale_color_manual(values = c('acoustic' = 'grey50', 'visual' = 'black'))+
   ylim(c(0,1))+
   facet_grid(bh~dist)+
   labs(x = 'Time [hr]', y = 'Probability', color = 'Platform:', linetype = 'Detection range:')+
@@ -86,7 +96,3 @@ p1 = ggplot(dq)+
 # save
 ggsave(plot = p1, filename = 'figures/f_range_probability.png', 
        width = 8, height = 6, dpi = 300)
-
-# save large version
-ggsave(plot = p1, filename = 'figures/f_range_probability-lrg.png', 
-       width = 6, height = 5, dpi = 300)

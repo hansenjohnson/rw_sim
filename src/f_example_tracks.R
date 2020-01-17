@@ -78,8 +78,8 @@ p1 = ggplot()+
             fill = NA, linetype = 2, color = "darkslategrey") + 
   
   # labels
-  geom_text(aes(x=23, y=-2, label = 'Socializing'), color = sc_col)+
-  geom_text(aes(x=14, y=28, label = 'Feeding'), color = fd_col)+
+  geom_text(aes(x=23, y=-3, label = 'Socializing'), color = sc_col)+
+  geom_text(aes(x=14, y=24, label = 'Feeding'), color = fd_col)+
   geom_text(aes(x=-20, y=-8, label = 'Traveling'), color = tr_col)+
   
   # formatting
@@ -114,10 +114,5 @@ m = rbind(c(1,1,1,1,2,2),
 
 # save
 png(filename = 'figures/f_example_tracks.png', width = 9, height = 7, units = 'in', res = 300)
-grid.arrange(p1,p2,p3,layout_matrix = m)
-dev.off()
-
-# large version for presentations
-png(filename = 'figures/f_example_tracks-lrg.png', width = 4, height = 3, units = 'in', res = 300)
 grid.arrange(p1,p2,p3,layout_matrix = m)
 dev.off()
