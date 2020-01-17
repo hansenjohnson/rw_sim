@@ -6,10 +6,6 @@
 # load external functions
 source('src/functions.R')
 
-# define directories
-fig_dir = 'figures'
-cac_dir = 'cache'
-
 # run 1: short range ------------------------------------------------------
 
 run_rw_sim(
@@ -56,6 +52,10 @@ run_rw_sim(
 )
 
 # visualize ---------------------------------------------------------------
+
+# define directories
+fig_dir = 'figures'
+cac_dir = 'cache'
 
 # create figure directory
 if(!dir.exists(fig_dir)){dir.create(fig_dir, recursive = TRUE)}
