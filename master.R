@@ -65,6 +65,9 @@ if(!dir.exists(cac_dir)){dir.create(cac_dir, recursive = TRUE)}
 source('src/f_example_tracks.R')
 source('src/f_detection_function.R')
 source('src/f_time_space.R')
-source('src/f_timeseries.R')
 source('src/f_difference.R')
 source('src/f_range_probability.R')
+
+# supplementary figures
+source('src/f_timeseries.R')
+source('src/f_movie.R')
