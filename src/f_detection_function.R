@@ -43,4 +43,4 @@ p1 = ggplot(data = rf)+
   theme(legend.justification = c(1, 1), legend.position = c(1, 1), legend.background = element_blank())
 
 # save
-ggsave(p1, filename = 'figures/f_detection_function.png', width = 6, height = 4, dpi = 300)
+ggsave(p1, filename = 'figures/f_detection_function.jpg', width = 6, height = 4, dpi = 300)

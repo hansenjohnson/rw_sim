@@ -113,6 +113,6 @@ m = rbind(c(1,1,1,1,2,2),
           c(1,1,1,1,3,3))
 
 # save
-png(filename = 'figures/f_example_tracks.png', width = 9, height = 7, units = 'in', res = 300)
+png(filename = 'figures/f_example_tracks.jpg', width = 9, height = 7, units = 'in', res = 300)
 grid.arrange(p1,p2,p3,layout_matrix = m)
 dev.off()

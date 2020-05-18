@@ -95,4 +95,4 @@ p1 = ggplot(df)+
   theme_bw()+
   theme(legend.position = "bottom", legend.direction = 'horizontal')
 
-ggsave(p1, filename = 'figures/f_timeseries.png', width = 10, height = 8, dpi = 300)
+ggsave(p1, filename = 'figures/f_timeseries.jpg', width = 10, height = 8, dpi = 300)

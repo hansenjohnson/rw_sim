@@ -94,5 +94,5 @@ p1 = ggplot(dq)+
   theme(legend.position = "bottom", legend.direction = 'horizontal')
 
 # save
-ggsave(plot = p1, filename = 'figures/f_range_probability.png', 
+ggsave(plot = p1, filename = 'figures/f_range_probability.jpg', 
        width = 8, height = 6, dpi = 300)

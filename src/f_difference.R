@@ -129,4 +129,4 @@ p2 = ggplot()+
   theme_bw()
 
 # save
-ggsave(filename = 'figures/f_difference-proportion.png', plot = p2, width = 10, height = 4, dpi = 300)
+ggsave(filename = 'figures/f_difference-proportion.jpg', plot = p2, width = 10, height = 4, dpi = 300)
