@@ -46,7 +46,7 @@ sc = rw_sim(hrs = nhrs, bh = 'socializing', nt = nt) %>%
 # definitions -------------------------------------------------------------
 
 # plot main map
-lim = ceiling(tr$r)
+lim = ceiling(max(tr$r, na.rm = T))
 
 # define offsets for tracks
 fdi = mutate(fd, x=x+10, y=y+10)
@@ -113,6 +113,6 @@ m = rbind(c(1,1,1,1,2,2),
           c(1,1,1,1,3,3))
 
 # save
-png(filename = 'figures/f_example_tracks.jpg', width = 9, height = 7, units = 'in', res = 300)
+pdf(file = 'figures/f_example_tracks.pdf', width = 7, height = 5)
 grid.arrange(p1,p2,p3,layout_matrix = m)
 dev.off()

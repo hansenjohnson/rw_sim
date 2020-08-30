@@ -65,7 +65,14 @@ p2 = ggplot()+
 
 # overlay plot on map
 p3 = p2+
-  annotation_custom(grob=ggplotGrob(p1), ymin = 1750, ymax=5000, xmin=-2500, xmax = 1250)
+  annotation_custom(grob=ggplotGrob(p1), ymin = 1700, ymax=5000, xmin=-2600, xmax = 1300)
+
+# # overlay lines on plot to test scaling
+# x0 = 145; y0 = 4620 # top right
+# # x0 = 320; y0 = 2225 # bottom right
+# p3 = p3+
+#   geom_path(aes(x=c(x0,x0), y=c(y0-200,y0+200)))+
+#   geom_path(aes(x=c(x0-200,x0+200), y=c(y0,y0)))
 
 # save
-ggsave(p3, filename = 'figures/f_time_space.jpb', width = 10, height = 11.2, units = 'in', dpi = 300)
+ggsave(p3, filename = 'figures/f_time_space.jpg', width = 7.5, height = 8.4, units = 'in', dpi = 600)

@@ -17,6 +17,7 @@ nrws = 1e5
 
 # setup -------------------------------------------------------------------
 
+library(cowplot)
 source('src/functions.R')
 
 # process -----------------------------------------------------------------
@@ -110,10 +111,8 @@ p1 = ggplot()+
   geom_hline(yintercept = 0, col = 'lightgrey', linetype = 1)+
   facet_grid(bh~run)+
   scale_x_continuous(breaks = c(0,24,48,72,96))+
-  theme_bw()
+  theme_bw()+
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
-
-ggsave(filename = 'figures/f_difference.png', plot = p1, width = 10, height = 8, dpi = 300)
 
 # plot proportional differences -------------------------------------------
 
@@ -122,11 +121,18 @@ p2 = ggplot()+
   geom_path(data = prp, aes(x=t,y=p,group=bh,linetype=bh))+
   scale_linetype_manual(values = c('traveling' = 1, 'feeding' = 2, 'socializing' = 3))+
   labs(x = 'Time [h]', 
-       y = 'Probability of higher uncertainty from visual detection', 
-       linetype = 'Behaviour')+
+       y = 'Probability of higher uncertainty\nfrom visual detection', 
+       linetype = 'Behavior')+
   facet_wrap(~run, nrow = 1, ncol = 3)+
   scale_x_continuous(breaks = c(0,24,48,72,96))+
   theme_bw()
 
+# combine -----------------------------------------------------------------
+
+# combine and align
+p3 = plot_grid(p1, p2, ncol = 1, align = "v", axis = "lr", rel_heights = c(1.5,0.9), labels = c('(a)','(b)'))
+
 # save
-ggsave(filename = 'figures/f_difference-proportion.jpg', plot = p2, width = 10, height = 4, dpi = 300)
+ggsave(filename = 'figures/f_difference.pdf', plot = p3, width = 7, height = 8, dpi = 800)  
+
+  
