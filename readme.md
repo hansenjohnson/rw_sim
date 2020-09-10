@@ -3,7 +3,11 @@ Estimating uncertainty in right whale location following visual or acoustic dete
 
 ## Description
 
-This project accompanies a manuscript submitted for publication in Conservation Biology. I will provide the link when available.
+This project accompanies the following manuscript:
+
+Johnson HD, Baumgartner MF, Taggart CT. 2020. Estimating North Atlantic right whale (Eubalaena glacialis) location uncertainty following visual or acoustic detection to inform dynamic management. Conservation Science and Practice. 
+
+The article is available [here](https://conbio.onlinelibrary.wiley.com/doi/full/10.1111/csp2.267).
 
 ## Project structure
 
